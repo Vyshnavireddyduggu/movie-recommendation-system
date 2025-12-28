@@ -51,4 +51,7 @@ To run this project:
 - Then run `backend.py` followed by `app.py`
 
 The complete preprocessing and recommendation logic is included in the code.
+## 🔗 Live Demo
+👉 https://movie-recommendation-system-6kqx5vqfmqf5hmvsufiuc3.streamlit.app
+
 
