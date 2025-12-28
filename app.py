@@ -1,4 +1,22 @@
 import streamlit as st
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-image: url("https://wallpaperaccess.com/full/1097137.jpg");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+
+    h1, h2, h3, label, span, div {
+        color: white !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 import pickle
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
@@ -50,4 +68,5 @@ if st.button("Recommend"):
     st.subheader("Recommended Movies:")
     for movie in results:
         st.write("👉", movie)
+
 
