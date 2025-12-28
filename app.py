@@ -11,8 +11,7 @@ st.title("🎬 Movie Recommendation System")
 # =========================
 # LOAD MOVIE DATA
 # =========================
-movies = pickle.load(open('movies.pkl', 'rb'))
-
+movies = pickle.load(open('movie_list.pkl', 'rb'))
 # =========================
 # CREATE SIMILARITY (NO .pkl FILE NEEDED)
 # =========================
@@ -51,3 +50,4 @@ if st.button("Recommend"):
     st.subheader("Recommended Movies:")
     for movie in results:
         st.write("👉", movie)
+
