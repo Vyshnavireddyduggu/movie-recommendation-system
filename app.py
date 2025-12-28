@@ -1,66 +1,53 @@
-import pickle
 import streamlit as st
-import requests
+import pickle
 import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-# ===============================
-# LOAD DATA FIRST
-# ===============================
-movies = pickle.load(open('movie_list.pkl', 'rb'))
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+st.set_page_config(page_title="Movie Recommendation System")
 
-# ===============================
-# FETCH POSTER FUNCTION
-# ===============================
-def fetch_poster(movie_id):
-    try:
-        url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US"
-        data = requests.get(url).json()
-        if data.get('poster_path'):
-            return "https://image.tmdb.org/t/p/w500/" + data['poster_path']
-        else:
-            return None
-    except:
-        return None
+st.title("🎬 Movie Recommendation System")
 
-# ===============================
+# =========================
+# LOAD MOVIE DATA
+# =========================
+movies = pickle.load(open('movies.pkl', 'rb'))
+
+# =========================
+# CREATE SIMILARITY (NO .pkl FILE NEEDED)
+# =========================
+cv = CountVectorizer(max_features=5000, stop_words='english')
+vectors = cv.fit_transform(movies['tags']).toarray()
+similarity = cosine_similarity(vectors)
+
+# =========================
 # RECOMMEND FUNCTION
-# ===============================
+# =========================
 def recommend(movie):
-    index = movies[movies['title'] == movie].index[0]
-    distances = sorted(
-        list(enumerate(similarity[index])),
+    movie_index = movies[movies['title'] == movie].index[0]
+    distances = similarity[movie_index]
+    movie_list = sorted(
+        list(enumerate(distances)),
         reverse=True,
         key=lambda x: x[1]
-    )
+    )[1:6]
 
-    recommended_movie_names = []
-    recommended_movie_posters = []
+    recommendations = []
+    for i in movie_list:
+        recommendations.append(movies.iloc[i[0]].title)
 
-    for i in distances[1:6]:
-        movie_id = movies.iloc[i[0]].movie_id
-        recommended_movie_names.append(movies.iloc[i[0]].title)
-        recommended_movie_posters.append(fetch_poster(movie_id))
-    return recommended_movie_names, recommended_movie_posters
+    return recommendations
 
-# ===============================
-# STREAMLIT UI
-# ===============================
-st.title('Movie Recommender System')
-
-movie_list = movies['title'].values
+# =========================
+# UI
+# =========================
 selected_movie = st.selectbox(
-    "Type or select a movie from the dropdown",
-    movie_list
+    "Select a movie:",
+    movies['title'].values
 )
 
-if st.button('Show Recommendation'):
-    names, posters = recommend(selected_movie)
-    cols = st.columns(5)
-    for i in range(5):
-        with cols[i]:
-            st.text(names[i])
-            if posters[i]:
-                st.image(posters[i])
-            else:
-                st.write("No poster available")
+if st.button("Recommend"):
+    results = recommend(selected_movie)
+    st.subheader("Recommended Movies:")
+    for movie in results:
+        st.write("👉", movie)
