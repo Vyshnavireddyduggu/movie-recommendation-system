@@ -63,6 +63,7 @@ The application is deployed using **Streamlit**, providing a simple and interact
 
 ## 📂 Project Structure
 Movie-Recommendation-System/
+
 │
 ├── backend.py # Data preprocessing and similarity computation
 ├── app.py # Streamlit application
