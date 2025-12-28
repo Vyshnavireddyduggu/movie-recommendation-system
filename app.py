@@ -3,7 +3,7 @@ st.markdown(
     """
     <style>
     .stApp {
-        background-image: url("https://wallpapercat.com/stranger-things-wallpapers#load");
+        background-image: url("https://www.wallpaperflare.com/stranger-things-5k-wallpaper-blqtt");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -68,6 +68,7 @@ if st.button("Recommend"):
     st.subheader("Recommended Movies:")
     for movie in results:
         st.write("👉", movie)
+
 
 
 
