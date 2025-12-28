@@ -1,4 +1,18 @@
 import streamlit as st
+import pickle
+import pandas as pd
+import requests
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# =========================
+# PAGE CONFIG
+# =========================
+st.set_page_config(page_title="Movie Recommendation System")
+
+# =========================
+# RED STRANGER THINGS BACKGROUND
+# =========================
 st.markdown(
     """
     <style>
@@ -19,60 +33,68 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
-import pickle
-import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-
-st.set_page_config(page_title="Movie Recommendation System")
-
 st.title("🎬 Movie Recommendation System")
 
 # =========================
 # LOAD MOVIE DATA
 # =========================
-movies = pickle.load(open('movie_list.pkl', 'rb'))
+movies = pickle.load(open("movie_list.pkl", "rb"))
+
 # =========================
-# CREATE SIMILARITY (NO .pkl FILE NEEDED)
+# CREATE SIMILARITY
 # =========================
-cv = CountVectorizer(max_features=5000, stop_words='english')
-vectors = cv.fit_transform(movies['tags']).toarray()
+cv = CountVectorizer(max_features=5000, stop_words="english")
+vectors = cv.fit_transform(movies["tags"]).toarray()
 similarity = cosine_similarity(vectors)
+
+# =========================
+# TMDB POSTER FUNCTION
+# =========================
+def fetch_poster(movie_id):
+    api_key = st.secrets["TMDB_API_KEY"]
+    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={api_key}"
+    data = requests.get(url).json()
+    poster_path = data.get("poster_path")
+    if poster_path:
+        return "https://image.tmdb.org/t/p/w500/" + poster_path
+    return None
 
 # =========================
 # RECOMMEND FUNCTION
 # =========================
 def recommend(movie):
-    movie_index = movies[movies['title'] == movie].index[0]
-    distances = similarity[movie_index]
+    index = movies[movies["title"] == movie].index[0]
+    distances = similarity[index]
     movie_list = sorted(
         list(enumerate(distances)),
         reverse=True,
         key=lambda x: x[1]
     )[1:6]
 
-    recommendations = []
-    for i in movie_list:
-        recommendations.append(movies.iloc[i[0]].title)
+    names = []
+    posters = []
 
-    return recommendations
+    for i in movie_list:
+        movie_id = movies.iloc[i[0]].movie_id
+        names.append(movies.iloc[i[0]].title)
+        posters.append(fetch_poster(movie_id))
+
+    return names, posters
 
 # =========================
 # UI
 # =========================
 selected_movie = st.selectbox(
     "Select a movie:",
-    movies['title'].values
+    movies["title"].values
 )
 
 if st.button("Recommend"):
-    results = recommend(selected_movie)
-    st.subheader("Recommended Movies:")
-    for movie in results:
-        st.write("👉", movie)
+    names, posters = recommend(selected_movie)
+    st.subheader("Recommended Movies")
 
-
-
-
-
+    cols = st.columns(5)
+    for i in range(5):
+        with cols[i]:
+            st.image(posters[i])
+            st.write(names[i])
