@@ -65,10 +65,15 @@ The application is deployed using **Streamlit**, providing a simple and interact
 Movie-Recommendation-System/
 
 backend.py # Data preprocessing and similarity computation
+
 app.py # Streamlit application
+
 movie_list.pkl # Preprocessed movie data
+
 similarity.pkl # Similarity matrix
+
 requirements.txt
+
 README.md
 
 
