@@ -13,27 +13,57 @@ st.set_page_config(page_title="Movie Recommendation System")
 # =========================
 # RED STRANGER THINGS BACKGROUND
 # =========================
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background-image:
-            linear-gradient(rgba(139,0,0,0.75), rgba(139,0,0,0.75)),
-            url("https://wallpaperaccess.com/full/1097137.jpg");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-    }
+st.markdown("""
+<style>
+/* Main background */
+.stApp {
+    background-image: url("https://wallpapercave.com/wp/wp1917154.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
 
-    h1, h2, h3, label, span, div, p {
-        color: white !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+/* Dark overlay for readability */
+.stApp::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(120, 0, 0, 0.65);
+    z-index: -1;
+}
 
-st.title("🎬 Movie Recommendation System")
+/* Title */
+h1 {
+    color: white;
+    text-shadow: 2px 2px 8px black;
+}
+
+/* Select box background */
+div[data-baseweb="select"] > div {
+    background-color: white !important;
+}
+
+/* Select box text */
+div[data-baseweb="select"] span {
+    color: black !important;
+    font-weight: 500;
+}
+
+/* Dropdown options */
+ul li {
+    color: black !important;
+}
+
+/* Labels */
+label {
+    color: white !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 
 # =========================
 # LOAD MOVIE DATA
@@ -98,3 +128,4 @@ if st.button("Recommend"):
         with cols[i]:
             st.image(posters[i])
             st.write(names[i])
+
