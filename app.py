@@ -3,19 +3,22 @@ st.markdown(
     """
     <style>
     .stApp {
-        background-image: url("https://www.wallpaperflare.com/stranger-things-5k-wallpaper-blqtt");
+        background-image:
+            linear-gradient(rgba(139,0,0,0.75), rgba(139,0,0,0.75)),
+            url("https://wallpaperaccess.com/full/1097137.jpg");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
     }
 
-    h1, h2, h3, label, span, div {
+    h1, h2, h3, label, span, div, p {
         color: white !important;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
+
 
 import pickle
 import pandas as pd
@@ -68,6 +71,7 @@ if st.button("Recommend"):
     st.subheader("Recommended Movies:")
     for movie in results:
         st.write("👉", movie)
+
 
 
 
